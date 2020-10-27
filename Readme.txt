@@ -1,4 +1,4 @@
-The project name : Intelligent traffic system 
+The project name : Intelligent traffic system  using Fuzzy logic
 
 Name:Ahishek Jaiswal
 Roll no: B54
