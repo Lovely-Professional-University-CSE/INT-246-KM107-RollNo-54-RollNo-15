@@ -33,7 +33,8 @@ fuzzyRules = [[['minimal', 'minimal'], 'short'], [['minimal', 'light'], 'short']
                       [['standstill', 'heavy'], 'long'], [['standstill', 'excess'], 'long']]
 
 
-
+carsWaiting = 10
+carsIncoming = 33
 def main():
     print('\nStart Program\n')
 
@@ -364,12 +365,29 @@ def showMsg():
     # tkWindow.geometry('1010x420')
     # tkWindow.title('PythonExamples.org - Tkinter Example')
     frame_3 = Frame(root,bg='#66B2FF')
-    frame_3.place(relx=0.5,rely=0.15,relwidth=0.655,relheight=0.55,anchor='n')
+    frame_3.place(relx=0.35,rely=0.15,relwidth=0.655,relheight=0.55,anchor='n')
     f=open("log.txt",'r')
     data=f.read()
     f.close()
-    Results = Label(frame_3, text = data,background = "#66B2FF" ,relief=RAISED,font=("Helvetica", 16),anchor=CENTER,foreground="black",padx = 10 , pady = 10)
+    Results = Label(frame_3, text = data,background = "#66B2FF" ,relief=RAISED,font=("Helvetica", 16),anchor=W,foreground="black",padx = 10 , pady = 10)
     Results.grid(row = 1, column = 1)
+    
+def showInput():
+    frame_4 = Frame(root,bg='#B8204E')
+    frame_4.place(relx=0.8,rely=0.15,relwidth=0.23,relheight=0.10,anchor='n')
+    name_label=Label(frame_4,text="Cars Incoming  ",bg='#FB2865',fg='#0D0D11',font=('Footlight MT Light',15))
+    name_label.place(relx =0,relwidth=0.7,relheight=1)
+    name_label=Label(frame_4,text=carsIncoming,fg='#0D0D11',bg='#FB2865',font=('Footlight MT Light',25))
+    name_label.place(relx =.5,relwidth=0.7,relheight=1)
+
+
+    frame_5 = Frame(root,bg='#B8204E')
+    frame_5.place(relx=0.8,rely=0.40,relwidth=0.23,relheight=0.10,anchor='n')
+    name_label=Label(frame_5,text="Cars Waiting   ",bg='#FB2865',fg='#0D0D11',font=('Footlight MT Light',15))
+    name_label.place(relx =0,relwidth=0.7,relheight=1)
+    name_label=Label(frame_5,text=carsWaiting,fg='#0D0D11',bg='#FB2865',font=('Footlight MT Light',25))
+    name_label.place(relx =.5,relwidth=0.7,relheight=1)
+
 
 
 
@@ -382,20 +400,24 @@ name_label.place(relx =0,relwidth=0.7,relheight=1)
 
 
 
-button_go = Button(frame_1,text="Fuzzy Logic",command = showMsg,font=('Forte',25),bg='#79FBAB')
+button_go = Button(frame_1,text="Fuzzy Logic",command=lambda:[showMsg(),showInput()],font=('Forte',25),bg='#79FBAB')
 button_go.place(relwidth=.20,relx=.80,relheight=1)
 
-frame_2 = Frame(root,bg='#B8204E')
-frame_2.place(relx=0.5,rely=0.15,relwidth=0.30,relheight=0.40,anchor='n')
+# frame_2 = Frame(root,bg='#B8204E')
+# frame_2.place(relx=0.5,rely=0.15,relwidth=0.30,relheight=0.40,anchor='n')
 
-name_label1=Label(frame_2,text="Output in log.txt file",background = "pink")
-name_label1.place(relx =0,relwidth=1,relheight=1)
 
-image = Image.open('scale.jpg')
 
-background_imag = ImageTk.PhotoImage(image)
-background_label = Label(name_label1,image=background_imag)
-background_label.place(relheight=1,relwidth=1)
+
+
+# name_label1=Label(frame_2,text="Output in log.txt file",background = "pink")
+# name_label1.place(relx =0,relwidth=1,relheight=1)
+#
+# image = Image.open('scale.jpg')
+#
+# background_imag = ImageTk.PhotoImage(image)
+# background_label = Label(name_label1,image=background_imag)
+# background_label.place(relheight=1,relwidth=1)
 
 
 root.mainloop()
