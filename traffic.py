@@ -9,7 +9,7 @@ from PIL import Image, ImageTk
 from tkinter import font
 import sys
 import tkinter
-root = tkinter.Toplevel()
+root = tkinter.Tk()
 
 root.title("Intelligent Traffic Control System")     # Add a title
 
@@ -369,7 +369,7 @@ def showMsg():
     # tkWindow.geometry('1010x420')
     # tkWindow.title('PythonExamples.org - Tkinter Example')
     frame_3 = Frame(root,bg='#B8204E')
-    frame_3.place(relx=0.5,rely=0.22,relwidth=0.30,relheight=0.40,anchor='n')
+    frame_3.place(relx=0.5,rely=0.22,relwidth=0.655,relheight=0.55,anchor='n')
     f=open("log.txt",'r')
     data=f.read()
     f.close()
