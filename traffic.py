@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
 #Inteliigent traffic system
 from tkinter import *
 from PIL import Image, ImageTk
@@ -368,19 +363,19 @@ def showMsg():
     # tkWindow = Tk()
     # tkWindow.geometry('1010x420')
     # tkWindow.title('PythonExamples.org - Tkinter Example')
-    frame_3 = Frame(root,bg='#B8204E')
-    frame_3.place(relx=0.5,rely=0.22,relwidth=0.655,relheight=0.55,anchor='n')
+    frame_3 = Frame(root,bg='#66B2FF')
+    frame_3.place(relx=0.5,rely=0.15,relwidth=0.655,relheight=0.55,anchor='n')
     f=open("log.txt",'r')
     data=f.read()
     f.close()
-    Results = Label(frame_3, text = data,background = "pink" ,relief=RAISED,font=("Helvetica", 16),anchor=CENTER,foreground="green",padx = 10 , pady = 10)
+    Results = Label(frame_3, text = data,background = "#66B2FF" ,relief=RAISED,font=("Helvetica", 16),anchor=CENTER,foreground="black",padx = 10 , pady = 10)
     Results.grid(row = 1, column = 1)
 
 
 
 
 frame_1 = Frame(root,bg='#B8204E',bd=5)
-frame_1.place(relx=0.5,rely=0.1,relwidth=0.6,relheight=0.1,anchor='n')
+frame_1.place(relx=0.5,rely=0.0,relwidth=0.6,relheight=0.1,anchor='n')
 
 name_label=Label(frame_1,text="Intelligent Traffic Control System   ",bg='#FB2865',fg='#0D0D11',font=('Footlight MT Light',25))
 name_label.place(relx =0,relwidth=0.7,relheight=1)
@@ -391,12 +386,12 @@ button_go = Button(frame_1,text="Fuzzy Logic",command = showMsg,font=('Forte',25
 button_go.place(relwidth=.20,relx=.80,relheight=1)
 
 frame_2 = Frame(root,bg='#B8204E')
-frame_2.place(relx=0.5,rely=0.22,relwidth=0.30,relheight=0.40,anchor='n')
+frame_2.place(relx=0.5,rely=0.15,relwidth=0.30,relheight=0.40,anchor='n')
 
 name_label1=Label(frame_2,text="Output in log.txt file",background = "pink")
 name_label1.place(relx =0,relwidth=1,relheight=1)
 
-image = Image.open('giphy.gif')
+image = Image.open('scale.jpg')
 
 background_imag = ImageTk.PhotoImage(image)
 background_label = Label(name_label1,image=background_imag)
@@ -404,12 +399,3 @@ background_label.place(relheight=1,relwidth=1)
 
 
 root.mainloop()
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
