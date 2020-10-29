@@ -365,15 +365,17 @@ background_label.place(relheight=1,relwidth=1)
 
 
 def showMsg():
-    tkWindow = Tk()
-    tkWindow.geometry('1010x420')
-    tkWindow.title('PythonExamples.org - Tkinter Example')
+    # tkWindow = Tk()
+    # tkWindow.geometry('1010x420')
+    # tkWindow.title('PythonExamples.org - Tkinter Example')
+    frame_3 = Frame(root,bg='#B8204E')
+    frame_3.place(relx=0.5,rely=0.22,relwidth=0.30,relheight=0.40,anchor='n')
     f=open("log.txt",'r')
     data=f.read()
     f.close()
-    Results = Label(tkWindow, text = data,background = "pink" ,relief=RAISED,font=("Helvetica", 16),anchor=CENTER,foreground="green",padx = 10 , pady = 10)
+    Results = Label(frame_3, text = data,background = "pink" ,relief=RAISED,font=("Helvetica", 16),anchor=CENTER,foreground="green",padx = 10 , pady = 10)
     Results.grid(row = 1, column = 1)
-    
+
 
 
 
@@ -411,7 +413,3 @@ root.mainloop()
 
 
 # In[ ]:
-
-
-
-
