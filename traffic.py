@@ -121,8 +121,8 @@ name_label.place(relx =0,relwidth=0.7,relheight=1)
 # clearx.place(relwidth=.15,relx=.83,rely=.05,relheight=0.05)
 
 
-default = Button(root,text="Default",command=lambda:[fuzz()],font=('Footlight MT Light',25),bg='red')
-default.place(relwidth=.15,relx=.83,rely=.30,relheight=0.05)
+default = Button(root,text="Plot graph",command=lambda:[fuzz()],font=('Footlight MT Light',25),bg='red',fg='green')
+default.place(relwidth=.2,relx=.7,rely=.30,relheight=0.05)
 
 
 # frame_2 = Frame(root,bg='#B8204E')
@@ -153,7 +153,7 @@ carsWaiting['low']=sk.trimf(carsWaiting.universe,[10,20,30])
 carsWaiting['medium']=sk.trimf(carsWaiting.universe,[29,30,40])
 
 carsWaiting['high']=sk.trimf(carsWaiting.universe,[40,50,60])
-carsWaiting['Very high']=sk.trimf(carsWaiting.universe,[60,70,100])
+carsWaiting['Very high']=sk.trimf(carsWaiting.universe,[60,70,101])
 
 
 carsIncoming['Very low']=sk.trimf(carsIncoming.universe,[1,10,20])
