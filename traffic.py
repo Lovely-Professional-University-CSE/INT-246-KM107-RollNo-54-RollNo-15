@@ -28,13 +28,25 @@ def showMsg( answer):
     # tkWindow = Tk()
     # tkWindow.geometry('1010x420')
     # tkWindow.title('PythonExamples.org - Tkinter Example')
+
+
     import sys
     stdoutOrigin=sys.stdout
     sys.stdout = open("log.txt", "w")
     frame_3 = Frame(root,bg='#66B2FF')
     frame_3.place(relx=0.35,rely=0.15,relwidth=0.655,relheight=0.55,anchor='n')
     f=open("log.txt",'r')
-    data= "The current traffic level is " +str(answer)+' %'
+    if answer<30:
+        data= "The current traffic level is Very Low " +str(answer)+' %'
+    elif answer>=30 and answer<50:
+        data= "The current traffic level is  Low " +str(answer)+' %'
+    if answer>=50 and answer<70:
+        data= "The current traffic level is Medium " +str(answer)+' %'
+    if answer>=70 and answer<78:
+        data= "The current traffic level is High " +str(answer)+' %'
+    if answer>=80 and answer<101:
+        data= "The current traffic level is Very High " +str(answer)+' %'
+
     f.close()
     Results = Label(frame_3, text = data,background = "#66B2FF" ,relief=RAISED,font=("Helvetica", 15),anchor=CENTER,foreground="black",padx = 10 , pady = 10)
     Results.grid(row = 1, column = 1)
@@ -134,33 +146,70 @@ from skfuzzy import control as ctrl;
 carsWaiting=ctrl.Antecedent(np.arange(1,200,1),'carsWaiting')
 carsIncoming =ctrl.Antecedent(np.arange(1,200,1),'carsIncoming')
 Traffic=ctrl.Consequent(np.arange(1,101,1),'Traffic')
-carsWaiting['low']=sk.trimf(carsWaiting.universe,[1,5,10])
-carsWaiting['medium']=sk.trimf(carsWaiting.universe,[8,15,20])
-carsWaiting['high']=sk.trimf(carsWaiting.universe,[18,50,200])
 
-carsIncoming['low']=sk.trimf(carsIncoming.universe,[1,5,10])
-carsIncoming['medium']=sk.trimf(carsIncoming.universe,[8,15,20])
-carsIncoming['high']=sk.trimf(carsIncoming.universe,[18,50,200])
+carsWaiting['Very low']=sk.trimf(carsWaiting.universe,[0,5,10])
+carsWaiting['low']=sk.trimf(carsWaiting.universe,[10,20,30])
 
-Traffic['low']=sk.trimf(Traffic.universe,[1,20,40])
-Traffic['medium']=sk.trimf(Traffic.universe,[30,60,80])
-Traffic['high']=sk.trimf(Traffic.universe,[70,80,100])
+carsWaiting['medium']=sk.trimf(carsWaiting.universe,[29,30,40])
+
+carsWaiting['high']=sk.trimf(carsWaiting.universe,[40,50,60])
+carsWaiting['Very high']=sk.trimf(carsWaiting.universe,[60,70,100])
+
+
+carsIncoming['Very low']=sk.trimf(carsIncoming.universe,[1,10,20])
+carsIncoming['low']=sk.trimf(carsIncoming.universe,[20,30,40])
+
+carsIncoming['medium']=sk.trimf(carsIncoming.universe,[39,50,80])
+
+carsIncoming['high']=sk.trimf(carsIncoming.universe,[79,100,130])
+carsIncoming['Very high']=sk.trimf(carsIncoming.universe,[129,155,191])
+
+
+Traffic['Very low']=sk.trimf(Traffic.universe,[1,5,20])
+Traffic['low']=sk.trimf(Traffic.universe,[20,30,40])
+
+Traffic['medium']=sk.trimf(Traffic.universe,[40,50,60])
+
+Traffic['high']=sk.trimf(Traffic.universe,[60,80,90])
+Traffic['Very high']=sk.trimf(Traffic.universe,[89,95,101])
 
 carsWaiting.view()
 carsIncoming.view()
 Traffic.view()
 
-Rule1=ctrl.Rule(carsWaiting['low']|carsIncoming['low'],Traffic['low'])
-Rule2=ctrl.Rule(carsWaiting['low']|carsIncoming['high'],Traffic['high'])
-Rule3=ctrl.Rule(carsWaiting['low']|carsIncoming['medium'],Traffic['medium'])
-Rule4=ctrl.Rule(carsWaiting['high']|carsIncoming['low'],Traffic['high'])
-Rule5=ctrl.Rule(carsWaiting['high']|carsIncoming['high'],Traffic['high'])
-Rule6=ctrl.Rule(carsWaiting['medium']|carsIncoming['low'],Traffic['low'])
-Rule7=ctrl.Rule(carsWaiting['medium']|carsIncoming['medium'],Traffic['medium'])
-Rule8=ctrl.Rule(carsWaiting['medium']|carsIncoming['high'],Traffic['high'])
-Rule9=ctrl.Rule(carsWaiting['high']|carsIncoming['medium'],Traffic['high'])
+Rule1=ctrl.Rule(carsWaiting['Very low']|carsIncoming['Very low'],Traffic['Very low'])
+Rule2=ctrl.Rule(carsWaiting['Very low']|carsIncoming['low'],Traffic['low'])
+Rule3=ctrl.Rule(carsWaiting['Very low']|carsIncoming['medium'],Traffic['medium'])
+Rule4=ctrl.Rule(carsWaiting['Very low']|carsIncoming['high'],Traffic['medium'])
+Rule5=ctrl.Rule(carsWaiting['Very low']|carsIncoming['Very high'],Traffic['Very high'])
 
-rule_control_system=ctrl.ControlSystem([Rule1,Rule2,Rule3,Rule4,Rule5,Rule6,Rule7,Rule8,Rule9])
+
+Rule6=ctrl.Rule(carsWaiting['low']|carsIncoming['Very low'],Traffic['Very low'])
+Rule7=ctrl.Rule(carsWaiting['low']|carsIncoming['low'],Traffic['low'])
+Rule8=ctrl.Rule(carsWaiting['low']|carsIncoming['medium'],Traffic['medium'])
+Rule9=ctrl.Rule(carsWaiting['low']|carsIncoming['high'],Traffic['medium'])
+Rule10=ctrl.Rule(carsWaiting['low']|carsIncoming['Very high'],Traffic['Very high'])
+
+Rule11=ctrl.Rule(carsWaiting['medium']|carsIncoming['Very low'],Traffic['low'])
+Rule12=ctrl.Rule(carsWaiting['medium']|carsIncoming['low'],Traffic['low'])
+Rule13=ctrl.Rule(carsWaiting['medium']|carsIncoming['medium'],Traffic['high'])
+Rule14=ctrl.Rule(carsWaiting['medium']|carsIncoming['high'],Traffic['high'])
+Rule15=ctrl.Rule(carsWaiting['medium']|carsIncoming['Very high'],Traffic['Very high'])
+
+Rule16=ctrl.Rule(carsWaiting['high']|carsIncoming['Very low'],Traffic['low'])
+Rule17=ctrl.Rule(carsWaiting['high']|carsIncoming['low'],Traffic['low'])
+Rule18=ctrl.Rule(carsWaiting['high']|carsIncoming['medium'],Traffic['high'])
+Rule19=ctrl.Rule(carsWaiting['high']|carsIncoming['high'],Traffic['high'])
+Rule20=ctrl.Rule(carsWaiting['high']|carsIncoming['Very high'],Traffic['Very high'])
+
+
+Rule21=ctrl.Rule(carsWaiting['Very high']|carsIncoming['Very low'],Traffic['medium'])
+Rule22=ctrl.Rule(carsWaiting['Very high']|carsIncoming['low'],Traffic['medium'])
+Rule23=ctrl.Rule(carsWaiting['Very high']|carsIncoming['medium'],Traffic['high'])
+Rule24=ctrl.Rule(carsWaiting['Very high']|carsIncoming['high'],Traffic['Very high'])
+Rule25=ctrl.Rule(carsWaiting['Very high']|carsIncoming['Very high'],Traffic['Very high'])
+
+rule_control_system=ctrl.ControlSystem([Rule1,Rule2,Rule3,Rule4,Rule5,Rule6,Rule7,Rule8,Rule9,Rule10,Rule11,Rule12,Rule13,Rule14,Rule15,Rule16,Rule17,Rule18,Rule19,Rule20,Rule21,Rule22,Rule23,Rule24,Rule25])
 rule_simulation=ctrl.ControlSystemSimulation(rule_control_system)
 
 
