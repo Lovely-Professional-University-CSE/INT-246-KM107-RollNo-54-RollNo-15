@@ -7,343 +7,7 @@ import tkinter
 root = tkinter.Tk()
 
 root.title("Intelligent Traffic Control System")     # Add a title
-
-import sys
-stdoutOrigin=sys.stdout
-sys.stdout = open("log.txt", "w")
-
-waitingTrafficFuzzySet = ['minimal', 'light', 'average', 'heavy', 'standstill']
-oncomingTrafficFuzzySet = ['minimal', 'light', 'average', 'heavy', 'excess']
-
-durationFuzzySet = ['short', 'medium', 'long']
-
-fuzzyRules = [[['minimal', 'minimal'], 'short'], [['minimal', 'light'], 'short'], [['minimal', 'average'], 'medium'],
-                      [['minimal', 'heavy'], 'long'], [['minimal', 'excess'], 'long'],
-
-                      [['light', 'minimal'], 'short'], [['light', 'light'], 'short'], [['light', 'average'], 'medium'],
-                      [['light', 'heavy'], 'medium'], [['light', 'excess'], 'long'],
-
-                      [['average', 'minimal'], 'short'], [['average', 'light'], 'medium'], [['average', 'average'], 'medium'],
-                      [['average', 'heavy'], 'long'], [['average', 'excess'], 'long'],
-
-                      [['heavy', 'minimal'], 'medium'], [['heavy', 'light'], 'medium'], [['heavy', 'average'], 'long'],
-                      [['heavy', 'heavy'], 'long'], [['heavy', 'excess'], 'long'],
-
-                      [['standstill', 'minimal'], 'medium'], [['standstill', 'light'], 'long'], [['standstill', 'average'], 'long'],
-                      [['standstill', 'heavy'], 'long'], [['standstill', 'excess'], 'long']]
-
-
-carsWaiting = 10
-carsIncoming = 33
-def main():
-    print('\nStart Program\n')
-
-    carsWaiting = 10
-    carsIncoming = 33
-
-    print('Number of cars waiting: ', carsWaiting)
-    print('Number of cars incoming: ', carsIncoming)
-
-    #Returns a two dimensional array in the form [['Light', 1.0], ['Average', 0.0]]
-    waitingTraffic = carWaitingFunction(carsWaiting)
-    incomingTraffic = carIncomingFunction(carsIncoming)
-
-
-    print('     CARS WAITING:  ', waitingTraffic,    '        CARS INCOMING:  ', incomingTraffic)
-
-
-    possibleWait = infer(waitingTraffic, incomingTraffic, fuzzyRules)
-
-    result = []
-    resultMax = {}
-
-    for i in possibleWait:
-        print(i[0][0][0][1], i[0][0][0][2], [0][0][1][1], i[0][0][1][2], i[1])
-        minimum = min(dt[0][0][0][2], i[0][0][1][2])
-        result.append([i[1],minimum])
-
-    for i in resultMax:
-        if i[0] in resultMax:
-            resultMax[i[0]].add(i[1])
-        else:
-            resultMax[data[0]] = set([i[1]])
-
-    inference = []
-    for key, value in resultMax.items():
-        inference.append([key,max(value)])
-
-    print()
-    print('\nDeffuzzyfication :')
-    finalValue = defuzzyfication(inference)
-
-    print('FUZZY SET: ', finalValue)
-
-    seconds = secs(finalValue)
-    print()
-    print('Green lights will be activated for ', seconds, ' seconds!')
-
-
-
-
-    sys.stdout.close()
-    sys.stdout=stdoutOrigin
-
-
-def secs(values):
-    seconds = 0
-
-    shortX = 50
-    mediumX = 90
-    longX = 125
-
-    condition1 = values[0]
-    value1 = values[1]
-    condition2 = values[2]
-    value2 = values[3]
-
-    if condition1 == 'medium' and condition2 == 'short':
-        seconds = (value1 * mediumX + value2 * shortX)
-    if condition1 == 'medium' and condition2 == 'long':
-        seconds = (value1 * mediumX + value2 * longX)
-    if condition1 == 'long' and condition2 == 'medium':
-        seconds = (value1 * longX + value2 * mediumX)
-    if condition1 == 'short' and condition2 == 'medium':
-        seconds = (value1 * shortX + value2 * mediumX)
-    if condition1 == 'long':
-        seconds = 150
-    else:
-        seconds = 45
-    return seconds
-
-
-
-def defuzzyfication(inputs):
-
-    fuzzyValues = []
-
-    currentFuzzyLinguistics = 'short'
-    currentFuzzyLinguistics2 = 'short'
-    currentFuzzyValue = 1.0
-    fuzzyDifference = 0
-
-    for i in inputs:
-        for j in i:
-            if j == 'short':
-                if i[1] < currentFuzzyValue:
-                    currentFuzzyValue = i[1]
-            if j == 'medium':
-                if i[1] < currentFuzzyValue:
-                    currentFuzzyValue = i[1]
-                    currentFuzzyLinguistics = j
-            if j == 'long':
-                if i[1] < currentFuzzyValue:
-                    currentFuzzyValue = i[1]
-                    currentFuzzyLinguistics = j
-    if currentFuzzyLinguistics == 'medium':
-        currentFuzzyLinguistics2 = 'short'
-        fuzzyDifference = 1.0 - currentFuzzyValue
-    if currentFuzzyLinguistics == 'long':
-        currentFuzzyLinguistics2 = 'medium'
-        fuzzyDifference = 1.0 - currentFuzzyValue
-    else:
-        fuzzyDifference = 1.0 - currentFuzzyValue
-
-
-    fuzzyValues.append(currentFuzzyLinguistics)
-    fuzzyValues.append(currentFuzzyValue)
-    fuzzyValues.append(currentFuzzyLinguistics2)
-    fuzzyValues.append(fuzzyDifference)
-
-    return fuzzyValues
-
-
-def infer(waiting, oncoming, rules):
-    A = []
-    P = []
-
-    for i in waiting:
-       A.append(i)
-    for i in oncoming:
-        A.append(i)
-
-    while A:
-        x = A.pop(0)
-        for rule in rules:
-            for j, k in enumerate(rule[0]):
-                if k == x[0]:
-                    rule[0][j] = [True, rule[0][j], x[1]]
-            if check(rule[0]):
-                result = rule[1]
-                P.append(rule)
-                A.append(result)
-                rule[0] = [rule[0],'processed']
-
-    return P
-
-def check(x):
-    for i in x:
-        if x[0] != True:
-            return False
-    return True
-
-def carWaitingFunction(cars):
-    linguisticCarsWaiting = []
-
-    if cars >= 0 and cars <= 15:
-        linguisticCarsWaiting.append(waitingTrafficFuzzySet[0]) # Minimal load of cars waiting
-    if cars >= 10 and cars <= 25:
-        linguisticCarsWaiting.append(waitingTrafficFuzzySet[1]) # Light load of cars waiting
-    if cars >= 20 and cars <= 35:
-        linguisticCarsWaiting.append(waitingTrafficFuzzySet[2]) # Average load of cars waiting
-    if cars >= 30 and cars <= 45:
-        linguisticCarsWaiting.append(waitingTrafficFuzzySet[3]) # Heavy load of cars waiting
-    if cars >= 40:
-        linguisticCarsWaiting.append(waitingTrafficFuzzySet[4]) # Standstill load of cars waiting
-
-
-
-
-    #Determine the overall wait time     (REVISE)
-
-    valueOfCarsWaiting = []
-
-    if len(linguisticCarsWaiting) > 1:
-        if linguisticCarsWaiting[0] == waitingTrafficFuzzySet[0] and linguisticCarsWaiting[1] == waitingTrafficFuzzySet[1]:
-            #Minimal and Light traffic wating (10 : 15)
-            minimal = - (cars - 15) / (15 - 10)
-            valueOfCarsWaiting.append([linguisticCarsWaiting[0], minimal])
-
-            light = - (cars - 25) / (15 - 10)
-            valueOfCarsWaiting.append([linguisticCarsWaiting[1], light])
-            print()
-            print('Fuzzy Set Minimal & Light: ', valueOfCarsWaiting)
-
-            return valueOfCarsWaiting
-
-        elif linguisticCarsWaiting[0] == waitingTrafficFuzzySet[1] and linguisticCarsWaiting[1] == waitingTrafficFuzzySet[2]:
-            #Light and Average traffic waiting
-            light = - (cars - 25) / (25 - 20)
-            valueOfCarsWaiting.append([linguisticCarsWaiting[0], light])
-
-            average = (cars - 20) / (25 - 20)
-            valueOfCarsWaiting.append([linguisticCarsWaiting[1], average])
-
-            print('Fuzzy Set Light & Average: ', valueOfCarsWaiting)
-
-            return valueOfCarsWaiting
-
-        elif linguisticCarsWaiting[0] == waitingTrafficFuzzySet[2] and linguisticCarsWaiting[1] == waitingTrafficFuzzySet[3]:
-            #Average and Heavy traffic waiting
-            average = - (cars - 35) / (35 - 30)
-            valueOfCarsWaiting.append([linguisticCarsWaiting[0], average])
-
-            heavy = (cars - 30) / (35 - 30)
-            valueOfCarsWaiting.append([linguisticCarsWaiting[1], heavy])
-
-            print('Fuzzy Set Average & Heavy: ', valueOfCarsWaiting)
-
-            return valueOfCarsWaiting
-
-        elif linguisticCarsWaiting[0] == waitingTrafficFuzzySet[3] and linguisticCarsWaiting[1] == waitingTrafficFuzzySet[4]:
-            #Average and Heavy traffic waiting
-            heavy = - (cars - 45) / (45 - 40)
-            valueOfCarsWaiting.append([linguisticCarsWaiting[0], heavy])
-
-            standstill = (cars - 40) / (45 - 40)
-            valueOfCarsWaiting.append([linguisticCarsWaiting[1], standstill])
-
-            print('Fuzzy Set Heavy & Standstill: ', valueOfCarsWaiting)
-
-            return valueOfCarsWaiting
-        else:
-            return valueOfCarsWaiting.append([linguisticCarsWaiting[0],1])
-
-
-
-
-def carIncomingFunction(cars):
-    linguisticCarsIncoming = []
-
-    if cars >= 0 and cars <= 15:
-        linguisticCarsIncoming.append(oncomingTrafficFuzzySet[0]) # Minimal load of cars coming into the intersection
-    if cars >= 10 and cars <= 25:
-        linguisticCarsIncoming.append(oncomingTrafficFuzzySet[1]) # Light load of cars coming into the intersection
-    if cars >= 20 and cars <= 35:
-        linguisticCarsIncoming.append(oncomingTrafficFuzzySet[2]) # Average load of cars coming into the intersection
-    if cars >= 30 and cars <= 45:
-        linguisticCarsIncoming.append(oncomingTrafficFuzzySet[3]) # Heavy load of cars coming into the intersection
-    if cars >= 40:
-        linguisticCarsIncoming.append(oncomingTrafficFuzzySet[4]) # Standstill load of cars coming into the intersection
-
-    print('\nINCOMING CARS FUZZY: ', linguisticCarsIncoming, '\n')
-
-    valueOfCarsIncoming = []
-
-    if len(linguisticCarsIncoming) > 1:
-        if linguisticCarsIncoming[0] == oncomingTrafficFuzzySet[0] and linguisticCarsIncoming[1] == oncomingTrafficFuzzySet[1]:
-            #Minimal and Light traffic wating (10 : 15)
-            minimal = - (cars - 15) / (15 - 10)
-            valueOfCarsIncoming.append([linguisticCarsIncoming[0], minimal])
-
-            light = - (cars - 25) / (15 - 10)
-            valueOfCarsIncoming.append([linguisticCarsIncoming[1], light])
-
-            print('Fuzzy Set Minimal & Light: ', valueOfCarsIncoming)
-
-            return valueOfCarsIncoming
-
-        elif linguisticCarsIncoming[0] == oncomingTrafficFuzzySet[1] and linguisticCarsIncoming[1] == oncomingTrafficFuzzySet[2]:
-            #Light and Average traffic waiting
-            light = - (cars - 25) / (25 - 20)
-            valueOfCarsIncoming.append([linguisticCarsIncoming[0], light])
-
-            average = (cars - 20) / (25 - 20)
-            valueOfCarsIncoming.append([linguisticCarsIncoming[1], average])
-
-            print('Fuzzy Set Light & Average: ', valueOfCarsIncoming)
-
-            return valueOfCarsIncoming
-
-        elif linguisticCarsIncoming[0] == oncomingTrafficFuzzySet[2] and linguisticCarsIncoming[1] == oncomingTrafficFuzzySet[3]:
-            #Average and Heavy traffic waiting
-            average = - (cars - 35) / (35 - 30)
-            valueOfCarsIncoming.append([linguisticCarsIncoming[0], average])
-
-            heavy = (cars - 30) / (35 - 30)
-            valueOfCarsIncoming.append([linguisticCarsIncoming[1], heavy])
-
-            print('Fuzzy Set Average & Heavy: ', valueOfCarsIncoming)
-
-            return valueOfCarsIncoming
-
-        elif linguisticCarsIncoming[0] == oncomingTrafficFuzzySet[3] and linguisticCarsIncoming[1] == oncomingTrafficFuzzySet[4]:
-            #Average and Heavy traffic waiting
-            heavy = - (cars - 45) / (45 - 40)
-            valueOfCarsIncoming.append([linguisticCarsIncoming[0], heavy])
-
-            excess = (cars - 40) / (45 - 40)
-            valueOfCarsIncoming.append([linguisticCarsIncoming[1], excess])
-
-            print('Fuzzy Set Heavy & Excess: ', valueOfCarsIncoming)
-
-            return valueOfCarsIncoming
-
-        else:
-            return valueOfCarsIncoming.append([linguisticCarsIncoming[0],1])
-
-
-if __name__ == '__main__':
-    main()
-
-
-
-
-
-
-
 # GUI OF THE TRAFFIC append
-
-
 
 HEIGHT = 1080
 WIDTH =1920
@@ -360,34 +24,53 @@ background_label.place(relheight=1,relwidth=1)
 
 
 
-def showMsg():
+def showMsg( answer):
     # tkWindow = Tk()
     # tkWindow.geometry('1010x420')
     # tkWindow.title('PythonExamples.org - Tkinter Example')
+    import sys
+    stdoutOrigin=sys.stdout
+    sys.stdout = open("log.txt", "w")
     frame_3 = Frame(root,bg='#66B2FF')
     frame_3.place(relx=0.35,rely=0.15,relwidth=0.655,relheight=0.55,anchor='n')
     f=open("log.txt",'r')
-    data=f.read()
+    data= "The current traffic level is " +str(answer)+' %'
     f.close()
-    Results = Label(frame_3, text = data,background = "#66B2FF" ,relief=RAISED,font=("Helvetica", 16),anchor=W,foreground="black",padx = 10 , pady = 10)
+    Results = Label(frame_3, text = data,background = "#66B2FF" ,relief=RAISED,font=("Helvetica", 15),anchor=CENTER,foreground="black",padx = 10 , pady = 10)
     Results.grid(row = 1, column = 1)
-    
-def showInput():
-    frame_4 = Frame(root,bg='#B8204E')
-    frame_4.place(relx=0.8,rely=0.15,relwidth=0.23,relheight=0.10,anchor='n')
-    name_label=Label(frame_4,text="Cars Incoming  ",bg='#FB2865',fg='#0D0D11',font=('Footlight MT Light',15))
-    name_label.place(relx =0,relwidth=0.7,relheight=1)
-    name_label=Label(frame_4,text=carsIncoming,fg='#0D0D11',bg='#FB2865',font=('Footlight MT Light',25))
-    name_label.place(relx =.5,relwidth=0.7,relheight=1)
+#
+# def showInput():
+#     # frame_4 = Frame(root,bg='#B8204E')
+#     # frame_4.place(relx=0.8,rely=0.15,relwidth=0.23,relheight=0.10,anchor='n')
+#     # name_label1=Label(frame_4,text="Cars Incoming  ",bg='#FB2865',fg='#0D0D11',font=('Footlight MT Light',15))
+#     # name_label1.place(relx =0,relwidth=0.7,relheight=1)
+#     name_label1=Label(frame_4,text=carsIncoming,fg='#0D0D11',bg='#FB2865',font=('Footlight MT Light',25))
+#     name_label1.place(relx =.5,relwidth=0.7,relheight=1)
+#
+#
+#     # frame_5 = Frame(root,bg='#B8204E')
+#     # frame_5.place(relx=0.8,rely=0.40,relwidth=0.23,relheight=0.10,anchor='n')
+#     # name_label2=Label(frame_5,text="Cars Waiting   ",bg='#FB2865',fg='#0D0D11',font=('Footlight MT Light',15))
+#     # name_label2.place(relx =0,relwidth=0.7,relheight=1)
+#     name_label2=Label(frame_5,text=carsWaiting,fg='#0D0D11',bg='#FB2865',font=('Footlight MT Light',25))
+#     name_label2.place(relx =.5,relwidth=0.7,relheight=1)
 
+def fuzz():
+    cw = int(v1.get())
+    ci = int(v2.get())
+    # a=eval(input("Enter the number of cars waiting :"))
+    a = cw
+    b = ci
 
-    frame_5 = Frame(root,bg='#B8204E')
-    frame_5.place(relx=0.8,rely=0.40,relwidth=0.23,relheight=0.10,anchor='n')
-    name_label=Label(frame_5,text="Cars Waiting   ",bg='#FB2865',fg='#0D0D11',font=('Footlight MT Light',15))
-    name_label.place(relx =0,relwidth=0.7,relheight=1)
-    name_label=Label(frame_5,text=carsWaiting,fg='#0D0D11',bg='#FB2865',font=('Footlight MT Light',25))
-    name_label.place(relx =.5,relwidth=0.7,relheight=1)
+    rule_simulation.input['carsWaiting']=a
+    # b=eval(input("Enter the number of incoming cars :"))
+    rule_simulation.input['carsIncoming']=b
 
+    rule_simulation.compute()
+    # print("Traffic  %f "%rule_simulation.output['Traffic'],"%")
+    answer = rule_simulation.output['Traffic']
+    Traffic.view(sim=rule_simulation)
+    showMsg(answer)
 
 
 
@@ -395,13 +78,40 @@ def showInput():
 frame_1 = Frame(root,bg='#B8204E',bd=5)
 frame_1.place(relx=0.5,rely=0.0,relwidth=0.6,relheight=0.1,anchor='n')
 
+
+frame_4 = Frame(root,bg='#B8204E')
+frame_4.place(relx=0.8,rely=0.15,relwidth=0.23,relheight=0.10,anchor='n')
+name_label1=Label(frame_4,text="Cars Incoming  ",bg='#FB2865',fg='#0D0D11',font=('Footlight MT Light',15))
+name_label1.place(relx =0,relwidth=0.7,relheight=1)
+v1 = StringVar()
+e = Entry(frame_4, textvariable=v1,bg='#B8204E',fg='#0D0D11',font=('Footlight MT Light',25),justify=CENTER)
+e.place(relx=0.85,rely=0,relwidth=.3,relheight=1,anchor='n')
+
+
+frame_5 = Frame(root,bg='#B8204E')
+frame_5.place(relx=0.8,rely=0.40,relwidth=0.23,relheight=0.10,anchor='n')
+name_label2=Label(frame_5,text="Cars Waiting   ",bg='#FB2865',fg='#0D0D11',font=('Footlight MT Light',15))
+name_label2.place(relx =0,relwidth=0.7,relheight=1)
+v2 = StringVar()
+e = Entry(frame_5, textvariable=v2,bg='#B8204E',fg='#0D0D11',font=('Footlight MT Light',25),justify=CENTER)
+e.place(relx=0.85,rely=0,relwidth=.3,relheight=1,anchor='n')
+
+
 name_label=Label(frame_1,text="Intelligent Traffic Control System   ",bg='#FB2865',fg='#0D0D11',font=('Footlight MT Light',25))
 name_label.place(relx =0,relwidth=0.7,relheight=1)
 
 
 
-button_go = Button(frame_1,text="Fuzzy Logic",command=lambda:[showMsg(),showInput()],font=('Forte',25),bg='#79FBAB')
-button_go.place(relwidth=.20,relx=.80,relheight=1)
+# button_go = Button(frame_1,text="Fuzzy Logic",command=lambda:[showMsg(),showInput()],font=('Forte',25),bg='#79FBAB')
+# button_go.place(relwidth=.20,relx=.80,relheight=1)
+#
+# clearx = Button(root,text="CLEAR",command=lambda:[showMsg()],font=('Footlight MT Light',25),bg='red')
+# clearx.place(relwidth=.15,relx=.83,rely=.05,relheight=0.05)
+
+
+default = Button(root,text="Default",command=lambda:[fuzz()],font=('Footlight MT Light',25),bg='red')
+default.place(relwidth=.15,relx=.83,rely=.30,relheight=0.05)
+
 
 # frame_2 = Frame(root,bg='#B8204E')
 # frame_2.place(relx=0.5,rely=0.15,relwidth=0.30,relheight=0.40,anchor='n')
@@ -418,6 +128,41 @@ button_go.place(relwidth=.20,relx=.80,relheight=1)
 # background_imag = ImageTk.PhotoImage(image)
 # background_label = Label(name_label1,image=background_imag)
 # background_label.place(relheight=1,relwidth=1)
+import numpy as np;
+import skfuzzy as sk;
+from skfuzzy import control as ctrl;
+carsWaiting=ctrl.Antecedent(np.arange(1,200,1),'carsWaiting')
+carsIncoming =ctrl.Antecedent(np.arange(1,200,1),'carsIncoming')
+Traffic=ctrl.Consequent(np.arange(1,101,1),'Traffic')
+carsWaiting['low']=sk.trimf(carsWaiting.universe,[1,5,10])
+carsWaiting['medium']=sk.trimf(carsWaiting.universe,[8,15,20])
+carsWaiting['high']=sk.trimf(carsWaiting.universe,[18,50,200])
+
+carsIncoming['low']=sk.trimf(carsIncoming.universe,[1,5,10])
+carsIncoming['medium']=sk.trimf(carsIncoming.universe,[8,15,20])
+carsIncoming['high']=sk.trimf(carsIncoming.universe,[18,50,200])
+
+Traffic['low']=sk.trimf(Traffic.universe,[1,20,40])
+Traffic['medium']=sk.trimf(Traffic.universe,[30,60,80])
+Traffic['high']=sk.trimf(Traffic.universe,[70,80,100])
+
+carsWaiting.view()
+carsIncoming.view()
+Traffic.view()
+
+Rule1=ctrl.Rule(carsWaiting['low']|carsIncoming['low'],Traffic['low'])
+Rule2=ctrl.Rule(carsWaiting['low']|carsIncoming['high'],Traffic['high'])
+Rule3=ctrl.Rule(carsWaiting['low']|carsIncoming['medium'],Traffic['medium'])
+Rule4=ctrl.Rule(carsWaiting['high']|carsIncoming['low'],Traffic['high'])
+Rule5=ctrl.Rule(carsWaiting['high']|carsIncoming['high'],Traffic['high'])
+Rule6=ctrl.Rule(carsWaiting['medium']|carsIncoming['low'],Traffic['low'])
+Rule7=ctrl.Rule(carsWaiting['medium']|carsIncoming['medium'],Traffic['medium'])
+Rule8=ctrl.Rule(carsWaiting['medium']|carsIncoming['high'],Traffic['high'])
+Rule9=ctrl.Rule(carsWaiting['high']|carsIncoming['medium'],Traffic['high'])
+
+rule_control_system=ctrl.ControlSystem([Rule1,Rule2,Rule3,Rule4,Rule5,Rule6,Rule7,Rule8,Rule9])
+rule_simulation=ctrl.ControlSystemSimulation(rule_control_system)
+
 
 
 root.mainloop()
