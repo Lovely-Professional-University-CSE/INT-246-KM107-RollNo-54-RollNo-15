@@ -36,15 +36,15 @@ def showMsg( answer):
     frame_3 = Frame(root,bg='#66B2FF')
     frame_3.place(relx=0.35,rely=0.15,relwidth=0.655,relheight=0.55,anchor='n')
     f=open("log.txt",'r')
-    if answer<30:
+    if answer<20:
         data= "The current traffic level is Very Low " +str(answer)+' %'
-    elif answer>=30 and answer<50:
+    elif answer>=20 and answer<40:
         data= "The current traffic level is  Low " +str(answer)+' %'
-    if answer>=50 and answer<70:
+    if answer>=40 and answer<60:
         data= "The current traffic level is Medium " +str(answer)+' %'
-    if answer>=70 and answer<78:
+    if answer>=60 and answer<90:
         data= "The current traffic level is High " +str(answer)+' %'
-    if answer>=80 and answer<101:
+    if answer>=90 and answer<101:
         data= "The current traffic level is Very High " +str(answer)+' %'
 
     f.close()
@@ -148,12 +148,12 @@ carsIncoming =ctrl.Antecedent(np.arange(1,200,1),'carsIncoming')
 Traffic=ctrl.Consequent(np.arange(1,101,1),'Traffic')
 
 carsWaiting['Very low']=sk.trimf(carsWaiting.universe,[0,5,10])
-carsWaiting['low']=sk.trimf(carsWaiting.universe,[10,20,30])
+carsWaiting['low']=sk.trimf(carsWaiting.universe,[8,13,15])
 
-carsWaiting['medium']=sk.trimf(carsWaiting.universe,[29,30,40])
+carsWaiting['medium']=sk.trimf(carsWaiting.universe,[13,18,20])
 
-carsWaiting['high']=sk.trimf(carsWaiting.universe,[40,50,60])
-carsWaiting['Very high']=sk.trimf(carsWaiting.universe,[60,70,100])
+carsWaiting['high']=sk.trimf(carsWaiting.universe,[18,25,30])
+carsWaiting['Very high']=sk.trimf(carsWaiting.universe,[30,70,100])
 
 
 carsIncoming['Very low']=sk.trimf(carsIncoming.universe,[1,10,20])
