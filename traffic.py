@@ -50,22 +50,7 @@ def showMsg( answer):
     f.close()
     Results = Label(frame_3, text = data,background = "#66B2FF" ,relief=RAISED,font=("Helvetica", 15),anchor=CENTER,foreground="black",padx = 10 , pady = 10)
     Results.grid(row = 1, column = 1)
-#
-# def showInput():
-#     # frame_4 = Frame(root,bg='#B8204E')
-#     # frame_4.place(relx=0.8,rely=0.15,relwidth=0.23,relheight=0.10,anchor='n')
-#     # name_label1=Label(frame_4,text="Cars Incoming  ",bg='#FB2865',fg='#0D0D11',font=('Footlight MT Light',15))
-#     # name_label1.place(relx =0,relwidth=0.7,relheight=1)
-#     name_label1=Label(frame_4,text=carsIncoming,fg='#0D0D11',bg='#FB2865',font=('Footlight MT Light',25))
-#     name_label1.place(relx =.5,relwidth=0.7,relheight=1)
-#
-#
-#     # frame_5 = Frame(root,bg='#B8204E')
-#     # frame_5.place(relx=0.8,rely=0.40,relwidth=0.23,relheight=0.10,anchor='n')
-#     # name_label2=Label(frame_5,text="Cars Waiting   ",bg='#FB2865',fg='#0D0D11',font=('Footlight MT Light',15))
-#     # name_label2.place(relx =0,relwidth=0.7,relheight=1)
-#     name_label2=Label(frame_5,text=carsWaiting,fg='#0D0D11',bg='#FB2865',font=('Footlight MT Light',25))
-#     name_label2.place(relx =.5,relwidth=0.7,relheight=1)
+
 
 def fuzz():
     cw = int(v1.get())
@@ -114,32 +99,10 @@ name_label.place(relx =0,relwidth=0.7,relheight=1)
 
 
 
-# button_go = Button(frame_1,text="Fuzzy Logic",command=lambda:[showMsg(),showInput()],font=('Forte',25),bg='#79FBAB')
-# button_go.place(relwidth=.20,relx=.80,relheight=1)
-#
-# clearx = Button(root,text="CLEAR",command=lambda:[showMsg()],font=('Footlight MT Light',25),bg='red')
-# clearx.place(relwidth=.15,relx=.83,rely=.05,relheight=0.05)
-
-
 default = Button(root,text="Plot graph",command=lambda:[fuzz()],font=('Footlight MT Light',25),bg='red',fg='green')
 default.place(relwidth=.2,relx=.7,rely=.30,relheight=0.05)
 
 
-# frame_2 = Frame(root,bg='#B8204E')
-# frame_2.place(relx=0.5,rely=0.15,relwidth=0.30,relheight=0.40,anchor='n')
-
-
-
-
-
-# name_label1=Label(frame_2,text="Output in log.txt file",background = "pink")
-# name_label1.place(relx =0,relwidth=1,relheight=1)
-#
-# image = Image.open('scale.jpg')
-#
-# background_imag = ImageTk.PhotoImage(image)
-# background_label = Label(name_label1,image=background_imag)
-# background_label.place(relheight=1,relwidth=1)
 import numpy as np;
 import skfuzzy as sk;
 from skfuzzy import control as ctrl;
