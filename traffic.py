@@ -7,7 +7,7 @@ import tkinter
 root = tkinter.Tk()
 
 root.title("Intelligent Traffic Control System")
- 
+ # gui making
 
 HEIGHT = 1080
 WIDTH =1920
