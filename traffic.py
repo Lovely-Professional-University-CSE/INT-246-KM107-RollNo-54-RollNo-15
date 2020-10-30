@@ -7,7 +7,7 @@ import tkinter
 root = tkinter.Tk()
 
 root.title("Intelligent Traffic Control System")     # Add a title
-# GUI OF THE TRAFFIC append gccvcvcvccvcc
+# GUI 
 
 HEIGHT = 1080
 WIDTH =1920
