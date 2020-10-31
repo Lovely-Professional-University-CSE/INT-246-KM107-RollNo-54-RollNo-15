@@ -95,11 +95,11 @@ e.place(relx=0.85,rely=0,relwidth=.3,relheight=1,anchor='n')
 
 
 name_label=Label(frame_1,text="Intelligent Traffic Control System   ",bg='#FB2865',fg='#0D0D11',font=('Footlight MT Light',25))
-name_label.place(relx =0,relwidth=0.7,relheight=1)
+name_label.place(relx =.15,relwidth=0.7,relheight=1)
 
 
 
-default = Button(root,text="Plot graph",command=lambda:[fuzz()],font=('Footlight MT Light',25),bg='red',fg='green')
+default = Button(root,text="Submit",command=lambda:[fuzz()],font=('Footlight MT Light',25),bg='#15C51F',fg='black')
 default.place(relwidth=.2,relx=.7,rely=.30,relheight=0.05)
 
 
@@ -115,13 +115,12 @@ carsWaiting['low']=sk.trimf(carsWaiting.universe,[8,13,15])
 
 carsWaiting['medium']=sk.trimf(carsWaiting.universe,[13,18,20])
 
-<<<<<<< HEAD
+
 carsWaiting['high']=sk.trimf(carsWaiting.universe,[40,50,60])
 carsWaiting['Very high']=sk.trimf(carsWaiting.universe,[60,70,101])
-=======
 carsWaiting['high']=sk.trimf(carsWaiting.universe,[18,25,30])
 carsWaiting['Very high']=sk.trimf(carsWaiting.universe,[30,70,100])
->>>>>>> 463e8aebcabf6afecf2851d3d8a6358260712142
+
 
 
 carsIncoming['Very low']=sk.trimf(carsIncoming.universe,[1,10,20])
