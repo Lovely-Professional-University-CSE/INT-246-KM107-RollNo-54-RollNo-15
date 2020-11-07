@@ -106,7 +106,7 @@ default.place(relwidth=.2,relx=.7,rely=.30,relheight=0.05)
 import numpy as np;
 import skfuzzy as sk;
 from skfuzzy import control as ctrl;
-carsWaiting=ctrl.Antecedent(np.arange(1,200,1),'carsWaiting')
+carsWaiting=ctrl.Antecedent(np.arange(1,200,1),'carsWaiting')#gggg
 carsIncoming =ctrl.Antecedent(np.arange(1,200,1),'carsIncoming')
 Traffic=ctrl.Consequent(np.arange(1,101,1),'Traffic')
 
